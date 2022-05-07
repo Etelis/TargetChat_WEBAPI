@@ -12,8 +12,8 @@ using targetchatserver.Data;
 namespace targetchatserver.Migrations
 {
     [DbContext(typeof(targetchatserverContext))]
-    [Migration("20220507131027_Init")]
-    partial class Init
+    [Migration("20220507133540_InitialCreate")]
+    partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -29,6 +29,10 @@ namespace targetchatserver.Migrations
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<string>("ContactName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<DateTime>("LastDate")
                         .HasColumnType("datetime2");
 
@@ -37,10 +41,6 @@ namespace targetchatserver.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Server")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("UserName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 

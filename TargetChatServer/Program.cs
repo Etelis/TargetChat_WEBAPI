@@ -5,9 +5,11 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using targetchatserver.Data;
 
+
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddDbContext<targetchatserverContext>(options =>
+
 
     options.UseSqlServer(builder.Configuration.GetConnectionString("targetchatserverContext") ?? throw new InvalidOperationException("Connection string 'targetchatserverContext' not found.")));
 

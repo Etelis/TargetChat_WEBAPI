@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace targetchatserver.Migrations
 {
-    public partial class Init : Migration
+    public partial class InitialCreate : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -28,7 +28,7 @@ namespace targetchatserver.Migrations
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    UserName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ContactName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Server = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     LastMessage = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     LastDate = table.Column<DateTime>(type: "datetime2", nullable: false),
