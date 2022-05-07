@@ -5,6 +5,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using targetchatserver.Data;
 using targetchatserver.Models;
 
 namespace targetchatserver.Controllers
@@ -14,8 +15,11 @@ namespace targetchatserver.Controllers
     public class LoginController : ControllerBase
     {
         private IConfiguration _configuration;
-        public LoginController(IConfiguration config)
+        private readonly targetchatserverContext _context;
+
+        public LoginController(IConfiguration config, targetchatserverContext context)
         {
+            _context = context;
             _configuration = config;
         }
         [HttpPost]
@@ -32,7 +36,7 @@ namespace targetchatserver.Controllers
         }
         private string Generate(UserModel user)
         {
-            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWTParam:Key"]));
+            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWTParams:Key"]));
             var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
             var claims = new[]
             {
@@ -50,7 +54,7 @@ namespace targetchatserver.Controllers
 
         private UserModel Authenticate(UserLogin userLogin)
         {
-            var currentUser = UserConstants.Users.FirstOrDefault(o => o.Username.ToLower() == userLogin.UserName.ToLower() && o.Password == userLogin.Password);
+            var currentUser =  _context.UserModel.Where(o => o.Username.ToLower() == userLogin.UserName.ToLower() && o.Password == userLogin.Password).FirstOrDefault();
             if (currentUser != null)
             {
                 return currentUser;
