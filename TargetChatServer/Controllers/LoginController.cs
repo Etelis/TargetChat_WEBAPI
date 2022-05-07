@@ -37,7 +37,7 @@ namespace targetchatserver.Controllers
 
         private string Generate(UserModel user)
         {
-            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWTParam:Key"]));
+            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWTParams:Key"]));
             var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
 
             var claims = new[]
@@ -45,11 +45,13 @@ namespace targetchatserver.Controllers
                 new Claim(ClaimTypes.NameIdentifier, user.Username),
             };
 
-            var token = new JwtSecurityToken(_configuration["JWTParam:Issuer"],
-                _configuration["JWTParam[Audience]",
+            var token = new JwtSecurityToken(_configuration["JWTParams:Issuer"],
+                _configuration["JWTParams[Audience]"],
                 claims,
                 expires: DateTime.Now.AddMinutes(20),
-                signingCredentials: credentials,);
+                signingCredentials: credentials);
+         
+            return new JwtSecurityTokenHandler().WriteToken(token);
         }
 
         private UserModel Authenticate(UserLogin userLogin)
