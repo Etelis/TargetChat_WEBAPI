@@ -1,12 +1,22 @@
-﻿namespace targetchatserver.Models
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace targetchatserver.Models
 {
     public class Contact
     {
+        [Key]
         public string Id { get; set; }
-        public string UserName { get; set; }
+        [Required]
+        public string ContactName { get; set; }
+        [Required]
         public string Server { get; set; }
+        [Required]
         public string LastMessage { get; set; }
-        public DateOnly LastDate { get; set; }
+        [Required]
+        public DateTime LastDate { get; set; }
+        [Required]
+        public UserModel User { get; set; }
+        public List<Message>? Messages { get; set; }
 
     }
 }

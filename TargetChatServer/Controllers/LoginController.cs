@@ -56,7 +56,7 @@ namespace targetchatserver.Controllers
 
         private UserModel Authenticate(UserLogin userLogin)
         {
-            var currentUser = UserConstants.Users.FirstOrDefault(o => o.Username.ToLower() == userLogin.Username.ToLower() && o.Password == userLogin.Password);
+            var currentUser = UserConstants.Users.FirstOrDefault(o => o.Username.ToLower() == userLogin.UserName.ToLower() && o.Password == userLogin.Password);
             if (currentUser != null)
             {
                 return currentUser;

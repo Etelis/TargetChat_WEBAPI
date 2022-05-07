@@ -15,7 +15,7 @@ namespace targetchatserver.Controllers
             return Ok("Hi");
         }
 
-        private UserModel GetCurrentUser()
+        public UserModel GetCurrentUser()
         {
             var identity = HttpContext.User.Identity as ClaimsIdentity;
             if (identity != null)
