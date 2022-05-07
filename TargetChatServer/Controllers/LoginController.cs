@@ -45,11 +45,11 @@ namespace targetchatserver.Controllers
                 new Claim(ClaimTypes.NameIdentifier, user.Username),
             };
 
-            var token = new JwtSecurityToken(_configuration["JWTParam:Issuer"],
-                _configuration["JWTParam[Audience]",
+            var token = new JwtSecurityToken(_configuration["JWTParams:Issuer"],
+                _configuration["JWTParams[Audience]"],
                 claims,
                 expires: DateTime.Now.AddMinutes(20),
-                signingCredentials: credentials,);
+                signingCredentials: credentials);
         }
 
         private UserModel Authenticate(UserLogin userLogin)
