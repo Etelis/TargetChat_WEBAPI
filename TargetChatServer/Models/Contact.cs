@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Runtime.Serialization;
 
 namespace targetchatserver.Models
 {
@@ -15,7 +16,10 @@ namespace targetchatserver.Models
         [Required]
         public DateTime LastDate { get; set; }
         [Required]
+        [IgnoreDataMember]
+        [Key]
         public UserModel User { get; set; }
+        [IgnoreDataMember]
         public List<Message>? Messages { get; set; }
 
     }

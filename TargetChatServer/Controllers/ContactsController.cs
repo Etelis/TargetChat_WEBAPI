@@ -2,38 +2,69 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using targetchatserver.Data;
+using targetchatserver.Interfaces;
 using targetchatserver.Models;
 
 namespace targetchatserver.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class ContactsController : ControllerBase
     {
         private readonly targetchatserverContext _context;
+        private readonly IMessageRepository _messages;
+        private readonly IContactRepository _contacts;
 
-        public ContactsController(targetchatserverContext context)
+
+        private string getUserName()
+        {
+            var identity = HttpContext.User.Identity as ClaimsIdentity;
+            if (identity != null)
+            {
+                var userClaims = identity.Claims;
+
+                return userClaims.FirstOrDefault(o => o.Type == ClaimTypes.NameIdentifier)?.Value;
+
+            }
+            return null;
+        }
+
+        private async Task<ActionResult<IEnumerable<Contact>>> getRelativeContacts()
+        {
+            var username = getUserName();
+            return await _context.Contact.Where(item => item.User.Username.Equals(username)).ToListAsync();
+        }
+
+
+        public ContactsController(targetchatserverContext context, IMessageRepository messages, IContactRepository contacts)
         {
             _context = context;
+            _messages = messages;
+            _contacts = contacts;
         }
 
         // GET: api/Contacts
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Contact>>> GetContact()
         {
-            return await _context.Contact.ToListAsync();
+            return await getRelativeContacts();
         }
 
         // GET: api/Contacts/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Contact>> GetContact(string id)
         {
-            var contact = await _context.Contact.FindAsync(id);
+            var username = getUserName();
+            var temp = await _context.Contact.Where(item => item.User.Username.Equals(username)).ToListAsync();
+            var contact = temp.Find(o => o.Id.Equals(id));
 
             if (contact == null)
             {
@@ -43,43 +74,43 @@ namespace targetchatserver.Controllers
             return contact;
         }
 
-        // PUT: api/Contacts/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutContact(string id, Contact contact)
+        [HttpGet("{id}/messages")]
+        public async Task<ActionResult<IEnumerable<Message>>> GetMessagesByContact(string id)
         {
-            if (id != contact.Id)
-            {
-                return BadRequest();
-            }
+            var contact = await GetContact(id);
+            if (contact == null)
+                return NotFound("Contact was not found");
 
-            _context.Entry(contact).State = EntityState.Modified;
+            var messages = await _messages.GetMessagesByContact(contact.Value);
 
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!ContactExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return NoContent();
+            return Ok(messages);
         }
+
+        [HttpGet("{id}/messages/{messageid}")]
+        public async Task<ActionResult<Message>> GetMessageByConact(string id, int messageid)
+        {
+            var contact = await GetContact(id);
+            if (contact == null)
+                return NotFound("Contact was not found");
+
+            var message = await _messages.GetMessageById(messageid, contact.Value);
+            if (message == null)
+                return NotFound("Message with id = {messageid} was not found");
+
+
+            return Ok(message);
+        }
+
 
         // POST: api/Contacts
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
         public async Task<ActionResult<Contact>> PostContact(Contact contact)
         {
-            _context.Contact.Add(contact);
+            var username = getUserName();
+           // var contact = new Contact { ContactName=newContact.name, Id=newContact.id, LastDate=null, LastMessage=null, 
+           // Messages = null, Server=newContact.server};
+           // var temp = await _context.Contact.Where(item => item.User.Username.Equals(username)).ToListAsync();
             try
             {
                 await _context.SaveChangesAsync();

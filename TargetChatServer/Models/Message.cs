@@ -1,4 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Runtime.Serialization;
+using System.Text.Json.Serialization;
 
 namespace targetchatserver.Models
 {
@@ -11,6 +13,7 @@ namespace targetchatserver.Models
         [Required]
         public DateTime Date { get; set; }
         [Required]
+        [IgnoreDataMember]
         public Contact Contact { get; set; }
         [Required]
         public bool Sent { get; set; }
