@@ -83,6 +83,18 @@ namespace targetchatserver.Controllers
             return BadRequest("Error adding the user");
         }
 
+        // POST: api/Users/register
+        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        [AllowAnonymous]
+        [HttpPost("details")]
+        public async Task<ActionResult<UserModel>> GetUserDetails([FromBody] UserLogin login)
+        {
+            var user = await _users.Authenticate(login);
+            if (user == null)
+                return NotFound("Invalid details");
+            return Ok(user);
+        }
+
 
     }
 }

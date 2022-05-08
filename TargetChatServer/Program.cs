@@ -8,6 +8,18 @@ using targetchatserver.Interfaces;
 using targetchatserver.Data.Services;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("CORSPolicy",
+        builder =>
+        {
+            builder
+            .AllowAnyMethod()
+            .AllowAnyHeader()
+            .WithOrigins("http://localhost:3000");
+        }
+        );
+});
 
 builder.Services.AddDbContext<targetchatserverContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("targetchatserverContext") ?? throw new InvalidOperationException("Connection string 'targetchatserverContext' not found.")));
@@ -50,9 +62,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseCors("Allow All");
-
 app.UseHttpsRedirection();
+app.UseCors("CORSPolicy");
 
 app.UseAuthentication();
 app.UseAuthorization();
