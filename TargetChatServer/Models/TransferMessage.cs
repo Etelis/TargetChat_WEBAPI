@@ -1,9 +1,9 @@
 ﻿namespace targetchatserver.Models
 {
-    public class Transfer
+    public class TransferMessage
     {
         public string From { get; set; }
         public string To { get; set; }
-        public string contect { get; set; }
+        public string content { get; set; }
     }
 }

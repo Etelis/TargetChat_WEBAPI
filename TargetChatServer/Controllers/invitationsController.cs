@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using targetchatserver.Interfaces;
 using targetchatserver.Models;
@@ -7,6 +8,7 @@ namespace targetchatserver.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class invitationsController : ControllerBase
     {
         private readonly IUserRepository _users;
@@ -29,18 +31,17 @@ namespace targetchatserver.Controllers
 
             var contact = new Contact()
             {
-                Id = invite.From,
-                Server = invite.Server,
-                ContactName = invite.From,
-                LastDate = DateTime.UtcNow,
-                LastMessage = null,
+                id = invite.From,
+                server = invite.Server,
+                name = invite.From,
+                lastdate = DateTime.UtcNow,
+                last = null,
                 Messages = null,
                 User = user
             };
 
-            if (await _contacts.CreateContactOfUser(contact) == null)
+            if (await _contacts.CreateContactOfUser(contact, invite.To) == null)
                 return BadRequest("Error adding new contact");
-
             return Ok();
         }
 

@@ -11,8 +11,15 @@ namespace targetchatserver.Data.Services
         {
             _context = context; 
         }
+        public async Task<List<Message>> GetMessagesByContact(Contact contact)
+        {
+            var messages = await _context.Message
+                .Where(message => message.Contact == contact)
+                .ToListAsync();
 
-        public async Task<Message> CreateMessageOfContact(Message message)
+            return messages;
+        }
+        public async Task<Message?> CreateMessageOfContact(Message message)
         {
             try
             {
@@ -32,7 +39,9 @@ namespace targetchatserver.Data.Services
             var message = await _context.Message.FirstOrDefaultAsync(message => message.Id == messageId && message.Contact == contact);
 
             if (message == null)
+            {
                 return null;
+            }
 
             _context.Message.Remove(message);
             await _context.SaveChangesAsync();
@@ -44,51 +53,33 @@ namespace targetchatserver.Data.Services
         {
             var message = await _context.Message.FirstOrDefaultAsync(message => message.Id == messageId && message.Contact == contact);
             if (message == null)
-                return null;
-
-            return message;
-        }
-        
-        public async Task<List<Message>> GetMessagesByContact(Contact contact)
-        {
-            var messages = await _context.Message
-                .Where(message => message.Contact == contact)
-                .ToListAsync();
-
-            return messages;
-        }
-
-        public async Task<Message> UpdateMessage(Message message, int messageId)
-        {
-            if (messageId != message.Id)
             {
                 return null;
             }
 
-            _context.Entry(message).State = EntityState.Modified;
+            return message;
+        }
+        
 
+        public async Task<Message> UpdateMessageById(Contact contact, int messageId, string content)
+        {
+            var messageToChange = await GetMessageById(messageId, contact);
+            if (messageToChange == null) 
+            {
+                return null;
+            }
+            messageToChange.Content = content;
             try
             {
                 await _context.SaveChangesAsync();
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!MessageExists(messageId))
-                {
-                    return null;
-                }
-                else
-                {
-                    throw;
-                }
+                throw;
             }
-
-            return message;
+            return messageToChange;
         }
 
-        private bool MessageExists(int id)
-        {
-            return _context.Message.Any(e => e.Id == id);
-        }
+
     }
 }

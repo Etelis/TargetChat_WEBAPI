@@ -21,7 +21,7 @@ namespace targetchatserver.Data.Services
 
         }
 
-        public async Task<UserModel> GetUserByUsername(string username)
+        public async Task<UserModel?> GetUserByUsername(string username)
         {
             var user =  await _context.UserModel.FirstOrDefaultAsync(User => User.Username.Equals(username));
             if (user == null)
@@ -32,18 +32,11 @@ namespace targetchatserver.Data.Services
             return user;
         }
 
-        public async Task<UserModel> Authenticate(UserLogin userLogin)
+        public async Task<UserModel?> Authenticate(UserLogin userLogin)
         {
-            var currentUser = await _context.UserModel.FirstOrDefaultAsync(o => o.Username.Equals(userLogin.UserName) && o.Password == userLogin.Password);
-
-            if (currentUser != null)
-            {
-                return currentUser;
-            }
-
-            return null;
+            return await _context.UserModel.FirstOrDefaultAsync(o => o.Username.Equals(userLogin.UserName) && o.Password == userLogin.Password);
+            
         }
-
         private bool UserModelExists(string id)
         {
             return _context.UserModel.Any(e => e.Username == id);
