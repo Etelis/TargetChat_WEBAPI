@@ -101,6 +101,27 @@ namespace targetchatserver.Controllers
             return Ok(message);
         }
 
+        [HttpPost("{id}/messages/")]
+        public async Task<ActionResult<Message>> PostMessage(string id, string content)
+        {
+            var contact = await GetContact(id);
+            if (contact == null)
+                return NotFound("Contact was not found");
+
+            var message = new Message()
+            {
+                Content = content,
+                Date = DateTime.Now,
+                Sent = false,
+                Contact = contact.Value,
+            };
+
+            if (await _messages.CreateMessageOfContact(message) == null)
+                return BadRequest("Error inserting message");
+
+            return Ok();
+        }
+
 
         // POST: api/Contacts
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
