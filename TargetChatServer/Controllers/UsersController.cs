@@ -55,12 +55,14 @@ namespace targetchatserver.Controllers
         public async Task<IActionResult> Login([FromBody] UserLogin userLogin)
         {
             var user = await _users.Authenticate(userLogin);
-            if (user != null)
+            if (user == null)
             {
-                var token = Generate(user);
-                return Ok(token);
+                return NotFound("Invalid details");
             }
-            return NotFound("User not found");
+            var token = Generate(user);
+            return Ok(new Session { user = user, token = token });
+          
+            
         }
 
         // POST: api/Users/register
@@ -82,19 +84,6 @@ namespace targetchatserver.Controllers
 
             return BadRequest("Error adding the user");
         }
-
-        // POST: api/Users/register
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [AllowAnonymous]
-        [HttpPost("details")]
-        public async Task<ActionResult<UserModel>> GetUserDetails([FromBody] UserLogin login)
-        {
-            var user = await _users.Authenticate(login);
-            if (user == null)
-                return NotFound("Invalid details");
-            return Ok(user);
-        }
-
 
     }
 }
