@@ -120,7 +120,7 @@ namespace targetchatserver.Controllers
 
         // POST: api/Contacts/{id}/messages
         [HttpPost("{id}/messages/")]
-        public async Task<ActionResult<Message>> PostMessage(string id, string content)
+        public async Task<ActionResult<Message>> PostMessage(string id, [FromBody] ContentToPost content)
         {
             var contact = await _contacts.GetContactById(id, getUserName());
             if (contact == null)
@@ -128,7 +128,7 @@ namespace targetchatserver.Controllers
 
             var message = new Message()
             {
-                Content = content,
+                Content = content.content,
                 Date = DateTime.Now,
                 Sent = false,
                 Contact = contact
@@ -175,7 +175,7 @@ namespace targetchatserver.Controllers
 
         // PUT: api/Contacts/{id}/messages/{m_id}
         [HttpPut("{id}/messages/{messageid}")]
-        public async Task<ActionResult<Message>> UpdateMessageByContact(string id, int messageid, [FromBody] string content)
+        public async Task<ActionResult<Message>> UpdateMessageByContact(string id, int messageid, [FromBody] ContentToPost content)
         {
             var contact = await _contacts.GetContactById(id, getUserName());
             if (contact == null)
@@ -183,7 +183,7 @@ namespace targetchatserver.Controllers
                 return NotFound("Contact was not found");
             }
 
-            var message = await _messages.UpdateMessageById(contact, messageid, content);
+            var message = await _messages.UpdateMessageById(contact, messageid, content.content);
             if (message == null)
             {
                 return NotFound("Message with id = {messageid} was not found");
