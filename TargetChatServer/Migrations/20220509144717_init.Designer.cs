@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using targetchatserver.Data;
 
@@ -11,9 +12,10 @@ using targetchatserver.Data;
 namespace targetchatserver.Migrations
 {
     [DbContext(typeof(targetchatserverContext))]
-    partial class targetchatserverContextModelSnapshot : ModelSnapshot
+    [Migration("20220509144717_init")]
+    partial class init
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -24,28 +26,30 @@ namespace targetchatserver.Migrations
 
             modelBuilder.Entity("targetchatserver.Models.Contact", b =>
                 {
-                    b.Property<string>("id")
+                    b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("ContactName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("LastDate")
+                        .IsRequired()
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("LastMessage")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Server")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Username")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("last")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("lastdate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("server")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("id");
+                    b.HasKey("Id");
 
                     b.HasIndex("Username");
 
@@ -60,7 +64,7 @@ namespace targetchatserver.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<string>("Contactid")
+                    b.Property<string>("ContactId")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
@@ -76,7 +80,7 @@ namespace targetchatserver.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Contactid");
+                    b.HasIndex("ContactId");
 
                     b.ToTable("Message");
                 });
@@ -118,7 +122,7 @@ namespace targetchatserver.Migrations
                 {
                     b.HasOne("targetchatserver.Models.Contact", "Contact")
                         .WithMany("Messages")
-                        .HasForeignKey("Contactid")
+                        .HasForeignKey("ContactId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

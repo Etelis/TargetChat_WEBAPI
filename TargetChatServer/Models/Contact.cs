@@ -6,21 +6,18 @@ namespace targetchatserver.Models
     public class Contact
     {
         [Key]
-        public string Id { get; set; }
+        public string id { get; set; }
         [Required]
-        public string ContactName { get; set; }
+        public string name { get; set; }
         [Required]
-        public string Server { get; set; }
-        [Required]
-        public string LastMessage { get; set; }
-        [Required]
-        public DateTime LastDate { get; set; }
+        public string server { get; set; }
+        public string? last { get; set; }
+        public DateTime? lastdate { get; set; }
         [Required]
         [IgnoreDataMember]
         [Key]
         public UserModel User { get; set; }
         [IgnoreDataMember]
         public List<Message>? Messages { get; set; }
-
     }
 }

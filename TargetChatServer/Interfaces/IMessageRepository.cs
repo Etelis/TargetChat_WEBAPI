@@ -10,6 +10,6 @@ namespace targetchatserver.Interfaces
         Task<Message> GetMessageById(int messageId, Contact contact);
         Task<Message> CreateMessageOfContact(Message message);
         Task<Message> DeleteMessageByID(int messageId, Contact contact);   
-        Task<Message> UpdateMessage(Message message, int messageId);
+        Task<Message> UpdateMessageById(Contact contact, int messageId, string content);
     }
 }

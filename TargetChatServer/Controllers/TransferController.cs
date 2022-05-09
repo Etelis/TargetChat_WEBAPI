@@ -16,6 +16,7 @@ namespace targetchatserver.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class TransferController : ControllerBase
     {
         private readonly IUserRepository _users;
@@ -32,19 +33,19 @@ namespace targetchatserver.Controllers
         // POST: api/Transfer
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult> PostMessage(Transfer transfer)
+        public async Task<ActionResult> PostMessage(TransferMessage transfer)
         {
             var user = await _users.GetUserByUsername(transfer.To);
             if (user == null)
                 return NotFound("To user was not found in DB");
 
-            var contact = await _contacts.GetContactById(transfer.From, user);
+            var contact = await _contacts.GetContactById(transfer.From, user.Username);
             if (contact == null)
                 return NotFound("Contact was not found in user");
 
             var message = new Message()
             {
-                Content = transfer.contect,
+                Content = transfer.content,
                 Date = DateTime.Now,
                 Sent = true,
                 Contact = contact,
