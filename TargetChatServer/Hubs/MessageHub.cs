@@ -23,7 +23,7 @@ namespace targetchatserver.Hubs
                 return;
 
             var connectionID = _connections[userConnection];
-            await Clients.Client(connectionID).SendAsync("ReceiveMessage", );
+            await Clients.Client(connectionID).SendAsync("ReceiveMessage", message.Content);
         }
     }
 }
