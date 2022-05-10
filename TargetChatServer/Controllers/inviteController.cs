@@ -9,12 +9,12 @@ namespace targetchatserver.Controllers
     [Route("api/[controller]")]
     [ApiController]
     [Authorize]
-    public class invitationsController : ControllerBase
+    public class inviteController : ControllerBase
     {
         private readonly IUserRepository _users;
         private readonly IContactRepository _contacts;
 
-        public invitationsController(IUserRepository users, IContactRepository contacts)
+        public inviteController(IUserRepository users, IContactRepository contacts)
         {
             _users = users;
             _contacts = contacts;

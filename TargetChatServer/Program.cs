@@ -6,6 +6,8 @@ using Microsoft.Extensions.DependencyInjection;
 using targetchatserver.Data;
 using targetchatserver.Interfaces;
 using targetchatserver.Data.Services;
+using targetchatserver.Hubs;
+using targetchatserver.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddCors(options =>
@@ -27,12 +29,14 @@ builder.Services.AddDbContext<targetchatserverContext>(options =>
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IContactRepository, ContactRepository>();
 builder.Services.AddScoped<IMessageRepository, MessageRepository>();
-
+builder.Services.AddSingleton<IDictionary<UserConnection, string>>(opts => new Dictionary<UserConnection, string>());
+builder.Services.AddSingleton<MessageHub>();
 // Add services to the container.
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSignalR();
 builder.Services.AddSwaggerGen();
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
 {
@@ -64,11 +68,17 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseRouting();
 app.UseCors("CORSPolicy");
 
 app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.UseEndpoints(endpoints =>
+{
+    endpoints.MapHub<MessageHub>("/chat_connect");
+});
 
 app.Run();

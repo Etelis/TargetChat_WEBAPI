@@ -30,6 +30,19 @@ namespace targetchatserver.Controllers
             _configuration = config;
         }
 
+        private string getUserName()
+        {
+            var identity = HttpContext.User.Identity as ClaimsIdentity;
+            if (identity != null)
+            {
+                var userClaims = identity.Claims;
+
+                return userClaims.FirstOrDefault(o => o.Type == ClaimTypes.NameIdentifier)?.Value;
+
+            }
+            return null;
+        }
+
         private string Generate(UserModel user)
         {
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWTParams:Key"]));
@@ -52,7 +65,7 @@ namespace targetchatserver.Controllers
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [AllowAnonymous]
         [HttpPost("login")]
-        public async Task<IActionResult> Login([FromBody] UserLogin userLogin)
+        public async Task<ActionResult<Session>> Login([FromBody] UserLogin userLogin)
         {
             var user = await _users.Authenticate(userLogin);
             if (user == null)
@@ -63,6 +76,23 @@ namespace targetchatserver.Controllers
             return Ok(new Session { user = user, token = token });
           
             
+        }
+
+        // POST: api/Users/token
+        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        [Authorize]
+        [HttpGet("token")]
+        public async Task<ActionResult<UserModel>> Token()
+        {
+            var userString = getUserName();
+            if (userString == null)
+            {
+                return NotFound("Invalid details");
+            }
+
+            var user = await _users.GetUserByUsername(userString);
+
+            return Ok(user);
         }
 
         // POST: api/Users/register

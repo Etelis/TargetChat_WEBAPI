@@ -49,8 +49,8 @@ namespace targetchatserver.Data.Services
 
         public async Task<Contact?> GetContactById(string id, string username)
         {
-            var temp = await _context.Contact.Where(item => item.User.Username.Equals(username)).ToListAsync();
-            var contact = temp.Find(o => o.id.Equals(id));
+            var user = await _user.GetUserByUsername(username);
+            var contact = await _context.Contact.FirstOrDefaultAsync(item => item.User == user && item.id.Equals(id));
             return contact;
         }
 

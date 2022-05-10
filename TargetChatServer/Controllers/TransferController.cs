@@ -11,6 +11,7 @@ using Microsoft.EntityFrameworkCore;
 using targetchatserver.Data;
 using targetchatserver.Interfaces;
 using targetchatserver.Models;
+using targetchatserver.Hubs;
 
 namespace targetchatserver.Controllers
 {
@@ -22,12 +23,14 @@ namespace targetchatserver.Controllers
         private readonly IUserRepository _users;
         private readonly IContactRepository _contacts;
         private readonly IMessageRepository _messages;
+        private readonly MessageHub _messageHub;
 
-        public TransferController(IUserRepository users, IContactRepository contacts, IMessageRepository messages)
+        public TransferController(IUserRepository users, IContactRepository contacts, IMessageRepository messages, MessageHub messageHub)
         {
             _users = users;
             _contacts = contacts;
             _messages = messages;
+            _messageHub = messageHub;
         }
 
         // POST: api/Transfer
@@ -53,6 +56,8 @@ namespace targetchatserver.Controllers
 
             if (await _messages.CreateMessageOfContact(message) == null)
                 return BadRequest("Error inserting message");
+
+            await _messageHub.RecivedMessage(message, transfer.From, transfer.To);
             return Ok();
         }
 
