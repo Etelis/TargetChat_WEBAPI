@@ -17,6 +17,12 @@ namespace targetchatserver.Hubs
             _connections[userConnection] = Context.ConnectionId;
         }
 
+        public override async Task OnDisconnectedAsync(Exception e)
+        {
+            var item = _connections.First(kvp => kvp.Value.Equals(Context.ConnectionId));
+            _connections.Remove(item);
+        }
+
         public async Task RecivedMessage(Message message, string fromContact, string toUser)
         {
             var userConnection = _connections.Keys.FirstOrDefault(c => c.username.Equals(toUser) && c.contactID.Equals(fromContact));
