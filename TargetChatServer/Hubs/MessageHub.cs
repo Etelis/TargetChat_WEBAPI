@@ -6,15 +6,16 @@ namespace targetchatserver.Hubs
     public class MessageHub : Hub
     {
         private readonly IDictionary<UserConnection, string> _connections;
+
         public MessageHub(IDictionary<UserConnection, string> connections)
         {
             _connections = connections;
         }
+
         public async Task ConnectClientToChat(UserConnection userConnection)
         {
             _connections[userConnection] = Context.ConnectionId;
         }
-
 
         public async Task RecivedMessage(Message message, string fromContact, string toUser)
         {
@@ -23,7 +24,9 @@ namespace targetchatserver.Hubs
                 return;
 
             var connectionID = _connections[userConnection];
-            await Clients.Client(connectionID).SendAsync("ReceiveMessage", );
+            await Clients.Client(connectionID).SendAsync("ReceiveMessage", new MessageToPost {
+                Id = message.Id, Content = message.Content, Date = message.Date, Sent = message.Sent
+            });
         }
     }
 }
