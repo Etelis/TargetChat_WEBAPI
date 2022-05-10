@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using targetchatserver.Hubs;
 using targetchatserver.Interfaces;
 using targetchatserver.Models;
 
@@ -13,12 +14,14 @@ namespace targetchatserver.Controllers
     {
         private readonly IUserRepository _users;
         private readonly IContactRepository _contacts;
+        private readonly ContactHub _contactHub;
 
-        public inviteController(IUserRepository users, IContactRepository contacts)
+        public inviteController(IUserRepository users, IContactRepository contacts, ContactHub contactHub)
         {
             _users = users;
             _contacts = contacts;
-        }
+            _contactHub = contactHub;
+    }
 
         // POST: api/invitations
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
@@ -42,6 +45,7 @@ namespace targetchatserver.Controllers
 
             if (await _contacts.CreateContactOfUser(contact, invite.To) == null)
                 return BadRequest("Error adding new contact");
+            _contactHub.AddContact(invite.To, con)
             return Ok();
         }
 

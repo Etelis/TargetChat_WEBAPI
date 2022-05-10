@@ -79,6 +79,7 @@ app.MapControllers();
 app.UseEndpoints(endpoints =>
 {
     endpoints.MapHub<MessageHub>("/chat_connect");
+    endpoints.MapHub<ContactHub>("/contact_connect");
 });
 
 app.Run();
