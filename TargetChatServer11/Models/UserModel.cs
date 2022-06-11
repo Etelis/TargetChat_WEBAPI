@@ -14,6 +14,5 @@ namespace TargetChatServer11.Models
         public string DisplayName { get; set; }
         public string? Photo { get; set; }
         public List<Contact>? Contacts { get; set; }
-
     }
 }

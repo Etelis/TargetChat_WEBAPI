@@ -74,8 +74,6 @@ namespace targetchatserver.Controllers
             }
             var token = Generate(user);
             return Ok(new Session { user = user, token = token });
-
-
         }
 
         // POST: api/Users/token

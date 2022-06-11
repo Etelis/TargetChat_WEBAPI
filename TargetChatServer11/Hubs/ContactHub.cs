@@ -20,10 +20,10 @@ namespace TargetChatServer11.Hubs
                 var connectionID = _connections[username];
                 await Clients.Client(connectionID).SendAsync("ReceiveContact", new ContactToPost
                 {
-                    id = contact.id,
+                    id = contact.userName,
                     last = contact.last,
                     lastdate = contact.lastdate,
-                    name = contact.name,
+                    name = contact.displayName,
                     server = contact.server
                 });
                 return;
@@ -40,7 +40,7 @@ namespace TargetChatServer11.Hubs
             try
             {
                 var connectionID = _connections[username];
-                await Clients.Client(connectionID).SendAsync("ContactUpdate", contact.id);
+                await Clients.Client(connectionID).SendAsync("ContactUpdate", contact.userName);
                 return;
             }
 

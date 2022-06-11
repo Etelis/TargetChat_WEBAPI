@@ -57,8 +57,8 @@ namespace TargetChatServer11.Controllers
             var username = GetUserName();
             var newContact = new Contact
             {
-                id = received.id,
-                name = received.name,
+                userName = received.id,
+                displayName = received.name,
                 lastdate = null,
                 last = null,
                 Messages = null,
