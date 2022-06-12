@@ -21,7 +21,7 @@ namespace TargetChatServer11.Data.Services
         {
             var userModel = await _user.GetUserByUsername(username);
             contact.User = userModel;
-            var checkIfExist = await _context.Contact.FirstOrDefaultAsync(item => item.userName.Equals(contact.userName) && item.User == userModel);
+            var checkIfExist = await _context.Contact.FirstOrDefaultAsync(item => item.id.Equals(contact.id) && item.User == userModel);
             if (checkIfExist == null)
             {
                 _context.Contact.Add(contact);
@@ -51,7 +51,7 @@ namespace TargetChatServer11.Data.Services
         public async Task<Contact?> GetContactById(string id, string username)
         {
             var user = await _user.GetUserByUsername(username);
-            var contact = await _context.Contact.FirstOrDefaultAsync(item => item.User == user && item.userName.Equals(id));
+            var contact = await _context.Contact.FirstOrDefaultAsync(item => item.User == user && item.id.Equals(id));
             return contact;
         }
 
@@ -62,7 +62,7 @@ namespace TargetChatServer11.Data.Services
             {
                 return null;
             }
-            contact.displayName = contactUpdate.name;
+            contact.name = contactUpdate.name;
             contact.server = contactUpdate.server;
             await _context.SaveChangesAsync();
             return contact;

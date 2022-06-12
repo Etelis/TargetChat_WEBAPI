@@ -50,10 +50,10 @@ namespace TargetChatServer11.Controllers
 
             var message = new Message()
             {
-                Content = transfer.content,
-                Date = DateTime.Now.ToString("r"),
-                Sent = true,
-                Contact = contact,
+                content = transfer.content,
+                created = DateTime.Now.ToString("r"),
+                sent = true,
+                contact = contact,
             };
 
             if (await _messages.CreateMessageOfContact(message) == null)

@@ -34,9 +34,9 @@ namespace TargetChatServer11.Controllers
 
             var contact = new Contact()
             {
-                userName = invite.From,
+                id = invite.From,
                 server = invite.Server,
-                displayName = invite.From,
+                name = invite.From,
                 lastdate = DateTime.Now,
                 last = null,
                 Messages = null,

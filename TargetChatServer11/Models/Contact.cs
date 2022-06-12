@@ -10,9 +10,9 @@ namespace TargetChatServer11.Models
         [IgnoreDataMember]
         public int Identifier { get; set; }
         [Required]
-        public string userName { get; set; }
+        public string id { get; set; }
         [Required]
-        public string displayName { get; set; }
+        public string name { get; set; }
         [Required]
         public string server { get; set; }
         public string? last { get; set; }

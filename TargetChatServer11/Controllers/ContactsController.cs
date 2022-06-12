@@ -57,8 +57,8 @@ namespace TargetChatServer11.Controllers
             var username = GetUserName();
             var newContact = new Contact
             {
-                userName = received.id,
-                displayName = received.name,
+                id = received.id,
+                name = received.name,
                 lastdate = null,
                 last = null,
                 Messages = null,
@@ -81,7 +81,7 @@ namespace TargetChatServer11.Controllers
             if (contact == null)
                 return StatusCode(404);
 
-            return Ok(await _contacts.GetContactById(id, GetUserName()));
+            return Ok(contact);
         }
 
         // DELETE: api/Contacts/5
@@ -132,10 +132,10 @@ namespace TargetChatServer11.Controllers
 
             var message = new Message()
             {
-                Content = content.content,
-                Date = DateTime.Now.ToString("r"),
-                Sent = false,
-                Contact = contact
+                content = content.content,
+                created = DateTime.Now.ToString("r"),
+                sent = false,
+                contact = contact
             };
 
             if (await _messages.CreateMessageOfContact(message) == null)

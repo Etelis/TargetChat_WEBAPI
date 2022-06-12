@@ -14,7 +14,7 @@ namespace TargetChatServer11.Data.Services
         public async Task<List<Message>> GetMessagesByContact(Contact contact)
         {
             var messages = await _context.Message
-                .Where(message => message.Contact == contact)
+                .Where(message => message.contact == contact)
                 .ToListAsync();
 
             return messages;
@@ -36,7 +36,7 @@ namespace TargetChatServer11.Data.Services
 
         public async Task<Message> DeleteMessageByID(int messageId, Contact contact)
         {
-            var message = await _context.Message.FirstOrDefaultAsync(message => message.Id == messageId && message.Contact == contact);
+            var message = await _context.Message.FirstOrDefaultAsync(message => message.id == messageId && message.contact == contact);
 
             if (message == null)
             {
@@ -51,7 +51,7 @@ namespace TargetChatServer11.Data.Services
 
         public async Task<Message> GetMessageById(int messageId, Contact contact)
         {
-            var message = await _context.Message.FirstOrDefaultAsync(message => message.Id == messageId && message.Contact == contact);
+            var message = await _context.Message.FirstOrDefaultAsync(message => message.id == messageId && message.contact == contact);
             if (message == null)
             {
                 return null;
@@ -68,7 +68,7 @@ namespace TargetChatServer11.Data.Services
             {
                 return null;
             }
-            messageToChange.Content = content;
+            messageToChange.content = content;
             try
             {
                 await _context.SaveChangesAsync();

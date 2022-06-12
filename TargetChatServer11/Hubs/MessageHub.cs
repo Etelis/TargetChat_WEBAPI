@@ -35,10 +35,10 @@ namespace TargetChatServer11.Hubs
                 var connectionID = _connections[userConnection];
                 await Clients.Client(connectionID).SendAsync("ReceiveMessage", new MessageToPost
                 {
-                    Id = message.Id,
-                    Content = message.Content,
-                    Date = message.Date,
-                    Sent = message.Sent
+                    Id = message.id,
+                    Content = message.content,
+                    Date = message.created,
+                    Sent = message.sent
                 });
             }
 
