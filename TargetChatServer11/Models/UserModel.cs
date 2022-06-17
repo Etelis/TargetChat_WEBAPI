@@ -1,4 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Newtonsoft.Json;
+using System.ComponentModel.DataAnnotations;
+using System.Runtime.Serialization;
 
 namespace TargetChatServer11.Models
 {
@@ -14,5 +16,7 @@ namespace TargetChatServer11.Models
         public string DisplayName { get; set; }
         public string? Photo { get; set; }
         public List<Contact>? Contacts { get; set; }
+        [IgnoreDataMember]
+        public List<AndroidDeviceIDModel>? DeviceIds { get; set; }
     }
 }

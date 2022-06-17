@@ -50,7 +50,7 @@ namespace TargetChatServer11.Controllers
             return Ok(await _contacts.GetAllContactsOfUser(GetUserName()));
         }
 
-        // POST: api/Contact/
+        // POST: api/Contacts/
         [HttpPost]
         public async Task<ActionResult<Contact>> PostContact(TransferContact received)
         {
@@ -81,7 +81,7 @@ namespace TargetChatServer11.Controllers
             if (contact == null)
                 return StatusCode(404);
 
-            return Ok(contact);
+            return Ok(await _contacts.GetContactById(id, GetUserName()));
         }
 
         // DELETE: api/Contacts/5
@@ -132,10 +132,10 @@ namespace TargetChatServer11.Controllers
 
             var message = new Message()
             {
-                content = content.content,
-                created = DateTime.Now.ToString("r"),
-                sent = false,
-                contact = contact
+                Content = content.content,
+                Date = DateTime.Now.ToString("r"),
+                Sent = false,
+                Contact = contact
             };
 
             if (await _messages.CreateMessageOfContact(message) == null)

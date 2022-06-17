@@ -1,4 +1,4 @@
-﻿
+﻿using CorePush.Google;
 using TargetChatServer11.Models;
 using Microsoft.Extensions.Options;
 using System;
@@ -46,8 +46,8 @@ namespace TargetChatServer11.Service
                 {
                     Data = new Dictionary<string, string>()
                     {
-                        { "content", message.content },
-                        { "created", message.date },
+                        { "content", message.Content },
+                        { "created", message.Date },
                         { "sent", sent }
                     },
 

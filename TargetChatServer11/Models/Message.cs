@@ -7,15 +7,15 @@ namespace TargetChatServer11.Models
     public class Message
     {
         [Key]
-        public int id { get; set; }
+        public int Id { get; set; }
         [Required]
-        public string content { get; set; }
+        public string Content { get; set; }
         [Required]
-        public string created { get; set; }
+        public string Date { get; set; }
         [Required]
         [IgnoreDataMember]
-        public Contact contact { get; set; }
+        public Contact Contact { get; set; }
         [Required]
-        public bool sent { get; set; }
+        public bool Sent { get; set; }
     }
 }

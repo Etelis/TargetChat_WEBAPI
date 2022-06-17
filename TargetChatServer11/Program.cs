@@ -8,6 +8,16 @@ using TargetChatServer11.Data.Services;
 using TargetChatServer11.Hubs;
 using TargetChatServer11.Interfaces;
 using TargetChatServer11.Utils;
+using FirebaseAdmin;
+using FirebaseAdmin.Messaging;
+using Google.Apis.Auth.OAuth2;
+using System;
+using System.IO;
+using System.Threading.Tasks;
+using TargetChatServer11.Service;
+using CorePush.Google;
+using CorePush.Apple;
+using System.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddCors(options =>
@@ -19,7 +29,7 @@ builder.Services.AddCors(options =>
             .AllowAnyMethod()
             .AllowAnyHeader()
             .AllowCredentials()
-            .WithOrigins("http://localhost:3000");
+            .SetIsOriginAllowed((host) => true);
         }
         );
 });
@@ -36,6 +46,18 @@ builder.Services.AddSingleton<ContactHub>();
 // Add services to the container.
 
 builder.Services.AddControllers();
+builder.Services.AddTransient<INotificationRepository, NotificationRepositroy>();
+builder.Services.AddHttpClient<FcmSender>();
+builder.Services.AddHttpClient<ApnSender>();
+var appSettingsSection = builder.Configuration.GetSection("FcmNotification");
+builder.Services.Configure<FcmNotificationSetting>(appSettingsSection);
+
+var defaultApp = FirebaseApp.Create(new AppOptions()
+{
+    Credential = GoogleCredential.FromFile(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "key.json")),
+});
+
+Console.WriteLine(defaultApp.Name); // "[DEFAULT]"
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSignalR();

@@ -9,16 +9,16 @@ namespace TargetChatServer11.Data
 {
     public class TargetChatServer11Context : DbContext
     {
-        public TargetChatServer11Context (DbContextOptions<TargetChatServer11Context> options)
+        public TargetChatServer11Context(DbContextOptions<TargetChatServer11Context> options)
             : base(options)
         {
         }
 
-       // protected override void OnModelCreating(ModelBuilder modelBuilder)
-      //  {
-      //      modelBuilder.Entity<Contact>()
+        // protected override void OnModelCreating(ModelBuilder modelBuilder)
+        //  {
+        //      modelBuilder.Entity<Contact>()
         //                .HasKey("id", "User");
-     //   }
+        //   }
 
         public DbSet<TargetChatServer11.Models.UserModel> UserModel { get; set; }
 
@@ -26,6 +26,6 @@ namespace TargetChatServer11.Data
 
         public DbSet<TargetChatServer11.Models.Message> Message { get; set; }
 
-        public DbSet<TargetChatServer11.Models.AndroidDeviceIDModel> AndroidDeviceIDModels { get; set; }
+        public DbSet<TargetChatServer11.Models.AndroidDeviceIDModel> AndroidDeviceIDModel { get; set; }
     }
 }

@@ -25,7 +25,7 @@ namespace TargetChatServer11.Data.Services
             if (checkIfExist == null)
             {
                 _context.Contact.Add(contact);
-                await _context.SaveChangesAsync(); 
+                await _context.SaveChangesAsync();
                 return contact;
             }
             return null;
@@ -34,11 +34,11 @@ namespace TargetChatServer11.Data.Services
         public async Task<Contact?> DeleteContactOfUser(string id, string username)
         {
             var contactToDelete = await GetContactById(id, username);
-            if(contactToDelete == null)
+            if (contactToDelete == null)
             {
                 return null;
             }
-            _context.Remove(contactToDelete);
+            _context.Contact.Remove(contactToDelete);
             await _context.SaveChangesAsync();
             return contactToDelete;
         }
@@ -58,7 +58,7 @@ namespace TargetChatServer11.Data.Services
         public async Task<Contact?> UpdateContactById(string id, string username, ContactUpdate contactUpdate)
         {
             var contact = await GetContactById(id, username);
-            if(contact == null)
+            if (contact == null)
             {
                 return null;
             }

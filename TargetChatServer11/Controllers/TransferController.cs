@@ -1,5 +1,4 @@
-﻿#nullable disable
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
@@ -18,22 +17,23 @@ namespace TargetChatServer11.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
     public class TransferController : ControllerBase
     {
         private readonly IUserRepository _users;
         private readonly IContactRepository _contacts;
         private readonly IMessageRepository _messages;
+        private readonly INotificationRepository _notification;
         private readonly MessageHub _messageHub;
         private readonly ContactHub _contactHub;
 
-        public TransferController(IUserRepository users, IContactRepository contacts, IMessageRepository messages, MessageHub messageHub, ContactHub contactHub)
+        public TransferController(IUserRepository users, IContactRepository contacts, IMessageRepository messages, MessageHub messageHub, ContactHub contactHub, INotificationRepository notification)
         {
             _users = users;
             _contacts = contacts;
             _messages = messages;
             _messageHub = messageHub;
             _contactHub = contactHub;
+            _notification = notification;
         }
 
         // POST: api/Transfer
@@ -50,19 +50,20 @@ namespace TargetChatServer11.Controllers
 
             var message = new Message()
             {
-                content = transfer.content,
-                created = DateTime.Now.ToString("r"),
-                sent = true,
-                contact = contact,
+                Content = transfer.content,
+                Date = DateTime.Now.ToString("r"),
+                Sent = true,
+                Contact = contact,
             };
 
             if (await _messages.CreateMessageOfContact(message) == null)
                 return BadRequest("Error inserting message");
 
-            await _contacts.UpdateContactLastTimeMessageByID(transfer.From, user.Username,transfer.content);
+            await _contacts.UpdateContactLastTimeMessageByID(transfer.From, user.Username, transfer.content);
             // SignalR - Update connected user with new message.
             await _contactHub.ContactUpdate(user.Username, contact);
             await _messageHub.RecivedMessage(message, transfer.From, transfer.To);
+            await _notification.SendNotification(message, transfer.To);
 
             return StatusCode(201);
         }

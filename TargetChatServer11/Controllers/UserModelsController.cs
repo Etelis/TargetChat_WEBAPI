@@ -23,12 +23,14 @@ namespace targetchatserver.Controllers
     public class UsersController : ControllerBase
     {
         private readonly IUserRepository _users;
+        private readonly INotificationRepository _notificationRepository;
         private IConfiguration _configuration;
 
-        public UsersController(IUserRepository users, IConfiguration config)
+        public UsersController(IUserRepository users, IConfiguration config, INotificationRepository notificationRepository)
         {
             _users = users;
             _configuration = config;
+            _notificationRepository = notificationRepository;
         }
 
         private string getUserName()
@@ -74,11 +76,13 @@ namespace targetchatserver.Controllers
             }
             var token = Generate(user);
             return Ok(new Session { user = user, token = token });
+
+
         }
 
         // POST: api/Users/token
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [Authorize]
+        [AllowAnonymous]
         [HttpGet("token")]
         public async Task<ActionResult<UserModel>> Token()
         {
@@ -113,5 +117,24 @@ namespace targetchatserver.Controllers
             return BadRequest("Error adding the user");
         }
 
+        [Authorize]
+        [HttpPost("registerDevice")]
+        public async Task<IActionResult> registerDevice(AndroidDeviceIDModel androidDeviceIDModel)
+        {
+            var userString = getUserName();
+            if (userString == null)
+            {
+                return NotFound("Invalid details");
+            }
+
+            var androidDeviceID = new AndroidDeviceIDModel
+            {
+                DeviceId = androidDeviceIDModel.DeviceId
+            };
+
+            await _notificationRepository.CreateAndoridDeviceOfUser(androidDeviceID, userString);
+            return Ok();
+        }
     }
+
 }
